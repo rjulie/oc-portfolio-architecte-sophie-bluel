@@ -96,14 +96,14 @@ function setPreviousImage() {
   }
 }
 
-async function fetchPost(userToken, newWorkJson) {
+async function fetchPost(userToken, formData) {
   await fetch("http://localhost:5678/api/works", {
     method: "POST",
     headers: {
-      "Content-Type": 'application/json',
+      // "Content-Type": `multipart/form-data; boundary=${formData.getBoundary()}`,
       "Authorization": `Bearer ${userToken}`,
     },
-    body: newWorkJson,
+    body: formData,
   });
 }
 
@@ -136,23 +136,28 @@ function createProject() {
       // enregister dans une constante l'url de l'image
       // la console logger
       // tester de passer le fetch
-      const imageUrl = document.getElementById("photo").files[0].name;
+      const fileInput = document.getElementById("photo");
+      const formData = new FormData();
+      formData.append('id', lastId + 1);
+      formData.append('title', titleValue);
+      formData.append('imageUrl', fileInput.files[0]);
+      formData.append('categoryId', parseInt(categoryId));
+      formData.append('userId', parseInt(userId));
 
-
-      const newWork = {
-        id: lastId + 1,
-        title: `${titleValue}`,
-        imageUrl: `http://localhost:5678/images/${imageUrl}`,
-        categoryId: parseInt(categoryId),
-        userId: parseInt(userId),
-      };
+      // const newWork = {
+        // id: lastId + 1,
+        // title: `${titleValue}`,
+        // imageUrl: `http://localhost:5678/images/${imageUrl}`,
+        // categoryId: parseInt(categoryId),
+        // userId: parseInt(userId),
+      // };
 
       // Création du newWork au format JSON
-      const newWorkJson = JSON.stringify(newWork);
-      console.log(newWorkJson);
+      // const newWorkJson = JSON.stringify(newWork);
+      // console.log(newWorkJson);
 
       // Appel de la fonction fetch avec toutes les informations nécessaires
-      const response = fetchPost(userToken, newWorkJson);
+      const response = fetchPost(userToken, formData);
       console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
