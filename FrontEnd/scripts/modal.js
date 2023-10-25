@@ -96,14 +96,15 @@ function setPreviousImage() {
   }
 }
 
-async function fetchPost(userToken, formData) {
+async function fetchPost(userToken, newWorkJson) {
   await fetch("http://localhost:5678/api/works", {
     method: "POST",
     headers: {
-      // "Content-Type": `multipart/form-data; boundary=${formData.getBoundary()}`,
-      "Authorization": `Bearer ${userToken}`,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${userToken}`,
     },
-    body: formData,
+    body: newWorkJson,
   });
 }
 
@@ -122,7 +123,6 @@ function createProject() {
 
   buttonPost.addEventListener("click", () => {
     try {
-
       console.log("fetch");
 
       const lastId = works.slice(-1)[0].id;
@@ -136,28 +136,28 @@ function createProject() {
       // enregister dans une constante l'url de l'image
       // la console logger
       // tester de passer le fetch
-      const fileInput = document.getElementById("photo");
-      const formData = new FormData();
-      formData.append('id', lastId + 1);
-      formData.append('title', titleValue);
-      formData.append('imageUrl', fileInput.files[0]);
-      formData.append('categoryId', parseInt(categoryId));
-      formData.append('userId', parseInt(userId));
+      // const fileInput = document.getElementById("photo");
+      // const formData = new FormData();
+      // formData.append('id', lastId + 1);
+      // formData.append('title', titleValue);
+      // formData.append('imageUrl', fileInput.files[0]);
+      // formData.append('categoryId', parseInt(categoryId));
+      // formData.append('userId', parseInt(userId));
 
-      // const newWork = {
-        // id: lastId + 1,
-        // title: `${titleValue}`,
-        // imageUrl: `http://localhost:5678/images/${imageUrl}`,
-        // categoryId: parseInt(categoryId),
-        // userId: parseInt(userId),
-      // };
+      const newWork = {
+        id: lastId + 1,
+        title: `${titleValue}`,
+        imageUrl: `http://localhost:5678/images/${imageUrl}`,
+        categoryId: parseInt(categoryId),
+        userId: parseInt(userId),
+      };
 
       // Création du newWork au format JSON
-      // const newWorkJson = JSON.stringify(newWork);
-      // console.log(newWorkJson);
+      const newWorkJson = JSON.stringify(newWork);
+      console.log(newWorkJson);
 
       // Appel de la fonction fetch avec toutes les informations nécessaires
-      const response = fetchPost(userToken, formData);
+      const response = fetchPost(userToken, newWorkJson);
       console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
