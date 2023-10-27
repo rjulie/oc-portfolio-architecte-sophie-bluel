@@ -74,9 +74,6 @@ async function deleteWork(event, workElement) {
 
 }
 
-
-
-
 ///////////// NEW ////////////////
 // interaction via les modal
 // attendu ne doit pas recharger la page
@@ -100,14 +97,18 @@ function setPreviousImage() {
     console.log(inputPhoto);
     console.log(inputPhoto.files[0]);
 
-    const image = event.target.files[0];
-    const reader = new FileReader();
+    // const image = event.target.files[0];
+    // const reader = new FileReader();
+
+    const divBeforePreview = document.getElementById("before-preview");
 
     if (files) {
       // Création de preview image
       previewImage.src = URL.createObjectURL(files);
       console.log("file");
       previewImage.setAttribute("id", "preview-image");
+
+      divBeforePreview.style.display = "none";
 
       // AJout du file dans localStorage
       // reader.addEventListener('load', () => {
@@ -164,17 +165,10 @@ function createProject() {
   buttonValidate.value = "Valider";
   buttonValidate.type = "submit";
 
-  // buttonValidate.innerText = "Valider";
-  // buttonValidate.type = "submit";
-  // buttonValidate.form = "form-new";
-  // buttonValidate.classList.add("validate-btn");
-
   console.log(buttonValidate);
 
-  // buttonValidate.classList.add("js-validate-btn");
   footer.insertAdjacentHTML("afterbegin", buttonValidate.outerHTML);
 
-  // const buttonPost = document.querySelector(".js-validate-btn");
   const newForm = document.getElementById("form-new");
 
   newForm.addEventListener("submit", async (event) => {
@@ -186,8 +180,6 @@ function createProject() {
       const formData = new FormData(newForm);
       console.log(formData);
       // const test = localStorage.getItem('image')
-
-
 
       // On peut cacher l'élément avec propriété > visible
       // ou variable
@@ -201,14 +193,10 @@ function createProject() {
       const parsedResponse = await response.json();
       console.log(parsedResponse);
 
-      // j'ajoute à partir de ma response
-      // j'ajoute l'élément dans ma section icons-gallery content
-      // et je ferme ma modal
+      // j'ajoute à partir de ma response l'élément dans ma section icons-gallery content et je ferme ma modal
       addElementOnGallery(parsedResponse);
 
       // corrige le preview de la photo
-
-      // et le bouton valider
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
