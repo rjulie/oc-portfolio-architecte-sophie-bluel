@@ -21,7 +21,6 @@ async function generateToken(user) {
     const result = await response.json();
 
     const userToken = JSON.stringify(result.token);
-    const userId = JSON.stringify(result.userId);
 
     // console.log(userToken);
     window.localStorage.setItem("token", userToken);
