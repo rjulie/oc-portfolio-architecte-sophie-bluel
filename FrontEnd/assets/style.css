@@ -335,6 +335,13 @@ input[type="submit"]{
   justify-content: center;
 }
 
+#before-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 input[type="file" i] {
   display: none;
 }
@@ -363,7 +370,6 @@ input[type="file" i] {
 #preview-image {
   height: 170px;
 }
-
 
 .fa-image {
   font-size: 58px;
@@ -463,7 +469,7 @@ input[type="file" i] {
   margin-top: 32px;
 }
 
-.validate-btn {
+.footer-modal > input[type="submit"]{
   background-color: #A7A7A7;
   color: white;
   width: 240px;

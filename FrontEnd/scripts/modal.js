@@ -93,18 +93,33 @@ function setPreviousImage() {
   const inputPhoto = document.getElementById("photo");
   const previewImage = document.createElement("img");
 
-  inputPhoto.onchange = evt => {
+  // const photo = inputPhoto.files[0]
+
+  inputPhoto.onchange = event => {
     const [files] = inputPhoto.files;
     console.log(inputPhoto);
     console.log(inputPhoto.files[0]);
 
+    const image = event.target.files[0];
+    const reader = new FileReader();
+
     if (files) {
+      // Création de preview image
       previewImage.src = URL.createObjectURL(files);
       console.log("file");
-
       previewImage.setAttribute("id", "preview-image");
+
+      // AJout du file dans localStorage
+      // reader.addEventListener('load', () => {
+      //   localStorage.setItem('image', reader.result);
+      // });
+      // if (image) {
+      //   reader.readAsDataURL(image);
+      // }
+
       // inputContentImage.innerHTML = "";
       inputContentImage.insertAdjacentHTML("afterbegin", previewImage.outerHTML);
+
     }
   }
 }
@@ -144,10 +159,19 @@ function createProject() {
   console.log("buttonPost");
 
   const footer = document.querySelector(".footer-modal");
-  const buttonValidate = document.createElement("button");
-  buttonValidate.innerText = "Valider";
-  buttonValidate.classList.add("validate-btn");
-  buttonValidate.classList.add("js-validate-btn");
+  const buttonValidate = document.createElement("input");
+  buttonValidate.setAttribute("form", "form-new");
+  buttonValidate.value = "Valider";
+  buttonValidate.type = "submit";
+
+  // buttonValidate.innerText = "Valider";
+  // buttonValidate.type = "submit";
+  // buttonValidate.form = "form-new";
+  // buttonValidate.classList.add("validate-btn");
+
+  console.log(buttonValidate);
+
+  // buttonValidate.classList.add("js-validate-btn");
   footer.insertAdjacentHTML("afterbegin", buttonValidate.outerHTML);
 
   // const buttonPost = document.querySelector(".js-validate-btn");
@@ -160,10 +184,15 @@ function createProject() {
       const userToken = window.localStorage.getItem("token").replace(/['"]+/g, '');
 
       const formData = new FormData(newForm);
+      console.log(formData);
+      // const test = localStorage.getItem('image')
+
+
 
       // On peut cacher l'élément avec propriété > visible
       // ou variable
       // const photo = inputPhoto.files[0]
+      // formData.append("image", photo);
 
       // Appel de la fonction fetch avec toutes les informations nécessaires
       const response = await fetchPost(userToken, formData);
@@ -216,12 +245,14 @@ function addProject() {
       content.innerHTML = `
         <form action="#" method="post" class="add-form form-modal" id="form-new">
           <div class="input-image">
-            <i class="fa-regular fa-image"></i>
-            <input type="file" id="photo" name="image" accept="image/png, image/jpeg"/>
-            <label id="photo-label" for="photo">
-              + Ajouter photo
-            </label>
-            <div id="photo-type">jpg, png : 4mo max</div>
+            <div id="before-preview">
+              <i class="fa-regular fa-image"></i>
+              <input type="file" id="photo" name="image" accept="image/png, image/jpeg"/>
+              <label id="photo-label" for="photo">
+                + Ajouter photo
+              </label>
+              <div id="photo-type">jpg, png : 4mo max</div>
+            </div>
           </div>
           <div class="inputs">
             <label for="title">Titre</label>
@@ -233,9 +264,9 @@ function addProject() {
               <option value=""></option>
             </select>
           </div>
-          <input type="submit" value="Ajout">
         </form>
       `;
+      // <input type="submit" value="Valider" style="display:none">
 
       categories.forEach(category => {
         const selectValue = document.createElement("option");
