@@ -287,6 +287,7 @@ function callModal() {
     const openModal = document.querySelector('.js-open-button');
     openModal.addEventListener("click", () => {
       modal.showModal();
+      generateIndex(works);
     })
   }
   if (document.querySelector('.js-close-button')) {
@@ -302,8 +303,6 @@ function callModal() {
       modal.style.display = "none";
     }
   }
-
-  generateIndex(works);
 }
 
 callModal();
