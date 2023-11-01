@@ -24,6 +24,10 @@ function generateIndex(works) {
 
       trashElement.dataset.id = works[i].id;
       trashElement.classList.add("js-delete-btn");
+
+      // fonction callback nécessaire (arrow function)
+      trashElement.addEventListener("click", (event) => deleteWork(event, workElement));
+
       trashElement.classList.add("delete-btn");
       trashElement.innerHTML=`<i class="fas fa-trash-alt"></i>`;
 
@@ -37,32 +41,38 @@ function generateIndex(works) {
 
 /////////// DELETE ////////////////
 
-async function fetchDelete(workId) {
-  await fetch(`http://localhost:5678/api/works/${workId}`, { method: 'DELETE' });
+async function fetchDelete(userToken, workId) {
+  // passer le bearer
+  return await fetch(`http://localhost:5678/api/works/${workId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+    },
+  });
 }
 
-function deleteWork() {
-  const buttonsDelete = document.querySelectorAll(".js-delete-btn");
+async function deleteWork(event, workElement) {
 
-  buttonsDelete.forEach((button) =>
-    button.addEventListener("click",() => {
-      try {
-        const workId = button.dataset.id;
-        const work = document.getElementById(`work-project-${workId}`);
-        const response = fetchDelete(workId);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        work.remove();
+  console.log(workElement);
 
-      } catch(error) {
-        // message erreur projet non supprimé
-        window.alert("Le projet n'a pas pu être supprimé.");
-      }
-    })
-  );
+  try {
+    const workId = workElement.dataset.id;
+    const work = document.getElementById(`work-project-${workId}`);
+    const userToken = window.localStorage.getItem("token").replace(/['"]+/g, '');
+    const response = await fetchDelete(userToken, workId);
+    console.log(response);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    work.remove();
+
+  } catch(error) {
+    console.log(error);
+    // message erreur projet non supprimé
+    window.alert("Le projet n'a pas pu être supprimé.");
+  }
+
 }
-
 
 ///////////// NEW ////////////////
 // interaction via les modal
@@ -80,31 +90,82 @@ function setPreviousImage() {
   const inputPhoto = document.getElementById("photo");
   const previewImage = document.createElement("img");
 
-  inputPhoto.onchange = evt => {
+  // const photo = inputPhoto.files[0]
+
+  inputPhoto.onchange = event => {
     const [files] = inputPhoto.files;
     console.log(inputPhoto);
     console.log(inputPhoto.files[0]);
 
+    // const image = event.target.files[0];
+    // const reader = new FileReader();
+
+    const divBeforePreview = document.getElementById("before-preview");
+
     if (files) {
+      // Création de preview image
       previewImage.src = URL.createObjectURL(files);
       console.log("file");
-
       previewImage.setAttribute("id", "preview-image");
+
+      divBeforePreview.style.display = "none";
+
+      // AJout du file dans localStorage
+      // reader.addEventListener('load', () => {
+      //   localStorage.setItem('image', reader.result);
+      // });
+      // if (image) {
+      //   reader.readAsDataURL(image);
+      // }
+
       // inputContentImage.innerHTML = "";
       inputContentImage.insertAdjacentHTML("afterbegin", previewImage.outerHTML);
+
     }
   }
 }
 
-async function fetchPost(userToken, newWorkJson) {
-  await fetch("http://localhost:5678/api/works", {
+// function readyToPost() {
+//   const inputPhoto = document.getElementById("photo").value;
+//   const inputTitle = document.getElementById("title").value;
+//   const inputCategory = document.getElementById("category").value;
+//   const buttonValidate = document.getElementById("submit-form-new");
+
+//   if ((inputPhoto != "") && (inputTitle != "") && (inputCategory != "")) {
+//     console.log("green button");
+//     buttonValidate.style.backgroundColor = "#1D6154";
+//   }
+
+// }
+
+async function fetchPost(userToken, formData) {
+  // return important pour recevoir la réponse du fetch
+  return await fetch("http://localhost:5678/api/works", {
     method: "POST",
     headers: {
-      "Content-Type": 'application/json',
-      "Authorization": `Bearer ${userToken}`,
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${userToken}`,
     },
-    body: newWorkJson,
+    body: formData,
   });
+}
+
+function addElementOnGallery(response) {
+  // Création et ajout du work
+  const sectionGallery = document.querySelector('.gallery');
+  const workElement = document.createElement("figure");
+  workElement.dataset.id = response.id;
+  const imageUrl = response.imageUrl;
+  const title = response.title ?? "(aucun titre)";
+  workElement.innerHTML=
+    `<img src="${imageUrl}" alt="${title}">
+    <figcaption> ${title}</figcaption>`
+  ;
+  sectionGallery.appendChild(workElement);
+
+  // Fermeture de la modal
+  const modal = document.querySelector('#modal');
+  modal.close();
 }
 
 function createProject() {
@@ -112,56 +173,54 @@ function createProject() {
   console.log("buttonPost");
 
   const footer = document.querySelector(".footer-modal");
-  const buttonValidate = document.createElement("button");
-  buttonValidate.innerText = "Valider";
-  buttonValidate.classList.add("validate-btn");
-  buttonValidate.classList.add("js-validate-btn");
+  const buttonValidate = document.createElement("input");
+  buttonValidate.setAttribute("form", "form-new");
+  buttonValidate.setAttribute("id", "submit-form-new");
+  buttonValidate.value = "Valider";
+  buttonValidate.type = "submit";
+
+
+  console.log(buttonValidate);
+
   footer.insertAdjacentHTML("afterbegin", buttonValidate.outerHTML);
 
-  const buttonPost = document.querySelector(".js-validate-btn");
+  const newForm = document.getElementById("form-new");
 
-  buttonPost.addEventListener("click", () => {
+  newForm.addEventListener("submit", async (event) => {
     try {
-
+      event.preventDefault();
       console.log("fetch");
-
-      const lastId = works.slice(-1)[0].id;
-      const titleValue = document.getElementById("title").value;
-      // const imageValue = document.getElementById("preview-image").src;
-      const categoryValue = document.getElementById("category").value;
-      const categoryId = (categories.find((category) => category.name === categoryValue)).id;
-      const userId = window.localStorage.getItem("id");
       const userToken = window.localStorage.getItem("token").replace(/['"]+/g, '');
 
-      // enregister dans une constante l'url de l'image
-      // la console logger
-      // tester de passer le fetch
-      const imageUrl = document.getElementById("photo").files[0].name;
+      const formData = new FormData(newForm);
+      console.log(formData);
+      // const test = localStorage.getItem('image')
 
-
-      const newWork = {
-        id: lastId + 1,
-        title: `${titleValue}`,
-        imageUrl: `http://localhost:5678/images/${imageUrl}`,
-        categoryId: parseInt(categoryId),
-        userId: parseInt(userId),
-      };
-
-      // Création du newWork au format JSON
-      const newWorkJson = JSON.stringify(newWork);
-      console.log(newWorkJson);
+      // On peut cacher l'élément avec propriété > visible
+      // ou variable
+      // const photo = inputPhoto.files[0]
+      // formData.append("image", photo);
 
       // Appel de la fonction fetch avec toutes les informations nécessaires
-      const response = fetchPost(userToken, newWorkJson);
-      console.log(response);
+      const response = await fetchPost(userToken, formData);
+
+      // il faut le json pour un fetch et refabriquer l'objet en json et l'utiliser si besoin
+      const parsedResponse = await response.json();
+      console.log(parsedResponse);
+
+      // j'ajoute à partir de ma response l'élément dans ma section icons-gallery content et je ferme ma modal
+      addElementOnGallery(parsedResponse);
+
+      // corrige le preview de la photo
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch(error) {
       // message erreur projet non ajouté
+      console.log(error);
       window.alert("Le projet n'a pas pu être ajouté.");
     }
-
   })
 }
 
@@ -189,12 +248,14 @@ function addProject() {
       content.innerHTML = `
         <form action="#" method="post" class="add-form form-modal" id="form-new">
           <div class="input-image">
-            <i class="fa-regular fa-image"></i>
-            <input type="file" id="photo" name="photo" accept="image/png, image/jpeg"/>
-            <label id="photo-label" for="photo">
-              + Ajouter photo
-            </label>
-            <div id="photo-type">jpg, png : 4mo max</div>
+            <div id="before-preview">
+              <i class="fa-regular fa-image"></i>
+              <input type="file" id="photo" name="image" accept="image/png, image/jpeg"/>
+              <label id="photo-label" for="photo">
+                + Ajouter photo
+              </label>
+              <div id="photo-type">jpg, png : 4mo max</div>
+            </div>
           </div>
           <div class="inputs">
             <label for="title">Titre</label>
@@ -208,13 +269,14 @@ function addProject() {
           </div>
         </form>
       `;
+      // <input type="submit" value="Valider" style="display:none">
 
       categories.forEach(category => {
         const selectValue = document.createElement("option");
         const selectElement = document.getElementById("category");
 
         selectValue.innerHTML =`${category.name}`;
-        selectValue.setAttribute("value", `${category.name}`);
+        selectValue.setAttribute("value", `${category.id}`);
         selectElement.insertAdjacentHTML("beforeend", selectValue.outerHTML);
       });
 
@@ -240,6 +302,7 @@ function callModal() {
     const openModal = document.querySelector('.js-open-button');
     openModal.addEventListener("click", () => {
       modal.showModal();
+      generateIndex(works);
     })
   }
   if (document.querySelector('.js-close-button')) {
@@ -255,8 +318,6 @@ function callModal() {
       modal.style.display = "none";
     }
   }
-
-  generateIndex(works);
 }
 
 callModal();

@@ -21,11 +21,10 @@ async function generateToken(user) {
     const result = await response.json();
 
     const userToken = JSON.stringify(result.token);
-    const userId = JSON.stringify(result.userId);
 
     // console.log(userToken);
     window.localStorage.setItem("token", userToken);
-    window.localStorage.setItem("id", userId);
+    // window.localStorage.setItem("id", userId);
     window.location.href = "http://127.0.0.1:5500";
 
   } catch(error) {
