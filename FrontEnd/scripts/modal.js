@@ -125,6 +125,19 @@ function setPreviousImage() {
   }
 }
 
+// function readyToPost() {
+//   const inputPhoto = document.getElementById("photo").value;
+//   const inputTitle = document.getElementById("title").value;
+//   const inputCategory = document.getElementById("category").value;
+//   const buttonValidate = document.getElementById("submit-form-new");
+
+//   if ((inputPhoto != "") && (inputTitle != "") && (inputCategory != "")) {
+//     console.log("green button");
+//     buttonValidate.style.backgroundColor = "#1D6154";
+//   }
+
+// }
+
 async function fetchPost(userToken, formData) {
   // return important pour recevoir la réponse du fetch
   return await fetch("http://localhost:5678/api/works", {
@@ -162,8 +175,10 @@ function createProject() {
   const footer = document.querySelector(".footer-modal");
   const buttonValidate = document.createElement("input");
   buttonValidate.setAttribute("form", "form-new");
+  buttonValidate.setAttribute("id", "submit-form-new");
   buttonValidate.value = "Valider";
   buttonValidate.type = "submit";
+
 
   console.log(buttonValidate);
 
