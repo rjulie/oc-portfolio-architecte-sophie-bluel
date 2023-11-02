@@ -108,10 +108,8 @@ function setPreviousImage() {
     console.log(inputPhoto);
     console.log(inputPhoto.files[0]);
 
-    // const image = event.target.files[0];
-    // const reader = new FileReader();
-
     const divBeforePreview = document.getElementById("before-preview");
+    const buttonValidate = document.getElementById("submit-form-new");
 
     if (files) {
       // Création de preview image
@@ -120,34 +118,14 @@ function setPreviousImage() {
       previewImage.setAttribute("id", "preview-image");
 
       divBeforePreview.style.display = "none";
-
-      // AJout du file dans localStorage
-      // reader.addEventListener('load', () => {
-      //   localStorage.setItem('image', reader.result);
-      // });
-      // if (image) {
-      //   reader.readAsDataURL(image);
-      // }
-
-      // inputContentImage.innerHTML = "";
       inputContentImage.insertAdjacentHTML("afterbegin", previewImage.outerHTML);
+
+      console.log("green button");
+      buttonValidate.style.backgroundColor = "#1D6154";
 
     }
   }
 }
-
-// function readyToPost() {
-//   const inputPhoto = document.getElementById("photo").value;
-//   const inputTitle = document.getElementById("title").value;
-//   const inputCategory = document.getElementById("category").value;
-//   const buttonValidate = document.getElementById("submit-form-new");
-
-//   if ((inputPhoto != "") && (inputTitle && inputCategory) != "") {
-//     console.log("green button");
-//     buttonValidate.style.backgroundColor = "#1D6154";
-//   }
-
-// }
 
 async function fetchPost(userToken, formData) {
   // return important pour recevoir la réponse du fetch
@@ -186,7 +164,7 @@ function createProject() {
   const footer = document.querySelector(".footer-modal");
   const buttonValidate = document.createElement("input");
   buttonValidate.setAttribute("form", "form-new");
-  // buttonValidate.setAttribute("id", "submit-form-new");
+  buttonValidate.setAttribute("id", "submit-form-new");
   buttonValidate.value = "Valider";
   buttonValidate.type = "submit";
 
@@ -308,12 +286,10 @@ addProject();
 
 function callModal() {
   const modal = document.querySelector('#modal');
-  const content = document.querySelector(".content");
 
   if (document.querySelector('.js-open-button')) {
     const openModal = document.querySelector('.js-open-button');
     openModal.addEventListener("click", () => {
-      content.innerHTML = "";
       modal.showModal();
       generateIndex(works);
     })
@@ -331,8 +307,6 @@ function callModal() {
       modal.style.display = "none";
     }
   }
-
-  // generateIndex(works);
 }
 
 callModal();
