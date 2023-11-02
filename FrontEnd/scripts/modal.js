@@ -41,6 +41,9 @@ function generateIndex(works) {
 
 /////////// DELETE ////////////////
 
+
+
+
 async function fetchDelete(userToken, workId) {
   // passer le bearer
   return await fetch(`http://localhost:5678/api/works/${workId}`, {
@@ -50,6 +53,13 @@ async function fetchDelete(userToken, workId) {
     },
   });
 }
+
+function removeElementFromGallery(workId) {
+  // suppression du work de la Homepage
+  const workElement = document.querySelector(`[data-id='${workId}']`);
+  workElement.remove();
+}
+
 
 async function deleteWork(event, workElement) {
 
@@ -65,6 +75,7 @@ async function deleteWork(event, workElement) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     work.remove();
+    removeElementFromGallery(workId);
 
   } catch(error) {
     console.log(error);
@@ -131,7 +142,7 @@ function setPreviousImage() {
 //   const inputCategory = document.getElementById("category").value;
 //   const buttonValidate = document.getElementById("submit-form-new");
 
-//   if ((inputPhoto != "") && (inputTitle != "") && (inputCategory != "")) {
+//   if ((inputPhoto != "") && (inputTitle && inputCategory) != "") {
 //     console.log("green button");
 //     buttonValidate.style.backgroundColor = "#1D6154";
 //   }
@@ -175,7 +186,7 @@ function createProject() {
   const footer = document.querySelector(".footer-modal");
   const buttonValidate = document.createElement("input");
   buttonValidate.setAttribute("form", "form-new");
-  buttonValidate.setAttribute("id", "submit-form-new");
+  // buttonValidate.setAttribute("id", "submit-form-new");
   buttonValidate.value = "Valider";
   buttonValidate.type = "submit";
 
@@ -297,10 +308,12 @@ addProject();
 
 function callModal() {
   const modal = document.querySelector('#modal');
+  const content = document.querySelector(".content");
 
   if (document.querySelector('.js-open-button')) {
     const openModal = document.querySelector('.js-open-button');
     openModal.addEventListener("click", () => {
+      content.innerHTML = "";
       modal.showModal();
       generateIndex(works);
     })
@@ -318,6 +331,8 @@ function callModal() {
       modal.style.display = "none";
     }
   }
+
+  // generateIndex(works);
 }
 
 callModal();
