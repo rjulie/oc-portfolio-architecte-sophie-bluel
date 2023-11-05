@@ -1,10 +1,11 @@
 ///////////// INDEX /////////////
 
-// Récupération des works depuis l'API
-const reponse = await fetch("http://localhost:5678/api/works");
-const works = await reponse.json();
+async function generateIndex() {
 
-function generateIndex(works) {
+  // Récupération des works depuis l'API
+  const reponse = await fetch("http://localhost:5678/api/works");
+  const works = await reponse.json();
+
   for (let i = 0; i < works.length; i++) {
     const icon = works[i];
 
@@ -151,10 +152,24 @@ function addElementOnGallery(response) {
     <figcaption> ${title}</figcaption>`
   ;
   sectionGallery.appendChild(workElement);
+}
 
-  // Fermeture de la modal
-  const modal = document.querySelector('#modal');
-  modal.close();
+function resetModal() {
+  const modal = document.getElementById("modal");
+  modal.innerHTML = `
+    <div class="header-modal">
+      <button class="js-close-button close-btn" aria-labelledby="Close"><i class="fas fa-times header-fa"></i></button>
+    </div>
+    <div class="content-modal">
+      <h2 class="title-modal">Galerie photo</h2>
+      <div class="icons-gallery content">
+      </div>
+      <hr>
+    </div>
+    <div class="footer-modal">
+      <button class="btn js-add-btn">Ajouter une photo</button>
+    </div>
+  `;
 }
 
 function createProject() {
@@ -200,7 +215,10 @@ function createProject() {
       // j'ajoute à partir de ma response l'élément dans ma section icons-gallery content et je ferme ma modal
       addElementOnGallery(parsedResponse);
 
-      // corrige le preview de la photo
+      // Fermeture de la modal et reset
+      const modal = document.querySelector('#modal');
+      modal.close();
+      resetModal();
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -280,8 +298,6 @@ function addProject() {
   }
 }
 
-addProject();
-
 ///////////// OPEN AND CLOSE MODAL //////////////
 
 function callModal() {
@@ -291,20 +307,23 @@ function callModal() {
     const openModal = document.querySelector('.js-open-button');
     openModal.addEventListener("click", () => {
       modal.showModal();
-      generateIndex(works);
+      generateIndex();
+      addProject();
     })
   }
   if (document.querySelector('.js-close-button')) {
     const closeModal = document.querySelector('.js-close-button');
     closeModal.addEventListener("click", () => {
       modal.close();
+      resetModal();
     })
   }
 
   // When the user clicks anywhere outside of the modal, close it
   window.onclick = function(event) {
     if (event.target == modal) {
-      modal.style.display = "none";
+      modal.close();
+      resetModal();
     }
   }
 }
