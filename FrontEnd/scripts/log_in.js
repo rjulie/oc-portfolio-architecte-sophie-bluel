@@ -11,9 +11,6 @@ async function generateToken(user) {
       body: JSON.stringify(user)
     });
 
-    console.log(response);
-    console.log(response.ok);
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -22,9 +19,7 @@ async function generateToken(user) {
 
     const userToken = JSON.stringify(result.token);
 
-    // console.log(userToken);
     window.localStorage.setItem("token", userToken);
-    // window.localStorage.setItem("id", userId);
     window.location.href = "http://127.0.0.1:5500";
 
   } catch(error) {

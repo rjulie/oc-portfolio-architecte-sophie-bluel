@@ -42,9 +42,6 @@ async function generateIndex() {
 
 /////////// DELETE ////////////////
 
-
-
-
 async function fetchDelete(userToken, workId) {
   // passer le bearer
   return await fetch(`http://localhost:5678/api/works/${workId}`, {
@@ -61,17 +58,14 @@ function removeElementFromGallery(workId) {
   workElement.remove();
 }
 
-
 async function deleteWork(event, workElement) {
-
-  console.log(workElement);
-
+  // console.log(workElement);
   try {
     const workId = workElement.dataset.id;
     const work = document.getElementById(`work-project-${workId}`);
     const userToken = window.localStorage.getItem("token").replace(/['"]+/g, '');
     const response = await fetchDelete(userToken, workId);
-    console.log(response);
+    // console.log(response);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -87,27 +81,18 @@ async function deleteWork(event, workElement) {
 }
 
 ///////////// NEW ////////////////
-// interaction via les modal
-// attendu ne doit pas recharger la page
-// toutes les modifs doivent se faire avec le dom, et uniquement la partie concernée par la modification.
 
 // Récupération des categories depuis l'API
 const reponseCategories = await fetch("http://localhost:5678/api/categories");
 const categories = await reponseCategories.json();
-console.log(categories);
 
 function setPreviousImage() {
-  console.log("set previous");
   const inputContentImage = document.querySelector(".input-image");
   const inputPhoto = document.getElementById("photo");
   const previewImage = document.createElement("img");
 
-  // const photo = inputPhoto.files[0]
-
   inputPhoto.onchange = event => {
     const [files] = inputPhoto.files;
-    console.log(inputPhoto);
-    console.log(inputPhoto.files[0]);
 
     const divBeforePreview = document.getElementById("before-preview");
     const buttonValidate = document.getElementById("submit-form-new");
@@ -115,15 +100,11 @@ function setPreviousImage() {
     if (files) {
       // Création de preview image
       previewImage.src = URL.createObjectURL(files);
-      console.log("file");
       previewImage.setAttribute("id", "preview-image");
 
       divBeforePreview.style.display = "none";
       inputContentImage.insertAdjacentHTML("afterbegin", previewImage.outerHTML);
-
-      console.log("green button");
       buttonValidate.style.backgroundColor = "#1D6154";
-
     }
   }
 }
@@ -173,18 +154,12 @@ function resetModal() {
 }
 
 function createProject() {
-
-  console.log("buttonPost");
-
   const footer = document.querySelector(".footer-modal");
   const buttonValidate = document.createElement("input");
   buttonValidate.setAttribute("form", "form-new");
   buttonValidate.setAttribute("id", "submit-form-new");
   buttonValidate.value = "Valider";
   buttonValidate.type = "submit";
-
-
-  console.log(buttonValidate);
 
   footer.insertAdjacentHTML("afterbegin", buttonValidate.outerHTML);
 
@@ -193,26 +168,19 @@ function createProject() {
   newForm.addEventListener("submit", async (event) => {
     try {
       event.preventDefault();
-      console.log("fetch");
       const userToken = window.localStorage.getItem("token").replace(/['"]+/g, '');
 
       const formData = new FormData(newForm);
-      console.log(formData);
-      // const test = localStorage.getItem('image')
-
-      // On peut cacher l'élément avec propriété > visible
-      // ou variable
-      // const photo = inputPhoto.files[0]
-      // formData.append("image", photo);
+      // console.log(formData);
 
       // Appel de la fonction fetch avec toutes les informations nécessaires
       const response = await fetchPost(userToken, formData);
 
       // il faut le json pour un fetch et refabriquer l'objet en json et l'utiliser si besoin
       const parsedResponse = await response.json();
-      console.log(parsedResponse);
+      // console.log(parsedResponse);
 
-      // j'ajoute à partir de ma response l'élément dans ma section icons-gallery content et je ferme ma modal
+      // j'ajoute à partir de ma response l'élément dans ma section icons-gallery content
       addElementOnGallery(parsedResponse);
 
       // Fermeture de la modal et reset
@@ -237,8 +205,6 @@ function addProject() {
     const buttonAdd = document.querySelector(".js-add-btn");
 
     buttonAdd.addEventListener("click",() => {
-      console.log("add");
-
       const title = document.querySelector(".title-modal");
       const content = document.querySelector(".content");
       const headerModal = document.querySelector(".header-modal");
@@ -276,7 +242,6 @@ function addProject() {
           </div>
         </form>
       `;
-      // <input type="submit" value="Valider" style="display:none">
 
       categories.forEach(category => {
         const selectValue = document.createElement("option");
@@ -293,30 +258,40 @@ function addProject() {
 
       createProject();
     });
+  }
 
-
+  if (document.querySelector('.js-close-button')) {
+    closeModal(modal);
   }
 }
 
 ///////////// OPEN AND CLOSE MODAL //////////////
 
+function openModal(modal) {
+  const openModal = document.querySelector('.js-open-button');
+  openModal.addEventListener("click", () => {
+    modal.showModal();
+    generateIndex();
+    addProject();
+  })
+}
+
+function closeModal(modal) {
+  const closeModal = document.querySelector('.js-close-button');
+  closeModal.addEventListener("click", () => {
+    modal.close();
+    resetModal();
+  })
+}
+
 function callModal() {
   const modal = document.querySelector('#modal');
 
   if (document.querySelector('.js-open-button')) {
-    const openModal = document.querySelector('.js-open-button');
-    openModal.addEventListener("click", () => {
-      modal.showModal();
-      generateIndex();
-      addProject();
-    })
+    openModal(modal);
   }
   if (document.querySelector('.js-close-button')) {
-    const closeModal = document.querySelector('.js-close-button');
-    closeModal.addEventListener("click", () => {
-      modal.close();
-      resetModal();
-    })
+    closeModal(modal);
   }
 
   // When the user clicks anywhere outside of the modal, close it
