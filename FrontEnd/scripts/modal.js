@@ -12,23 +12,23 @@ async function generateIndex() {
     if (document.querySelector(".icons-gallery")) {
       // Récupération de l'élément du DOM qui accueillera les fiches
       const sectionGalleryModal = document.querySelector(".icons-gallery");
+
       // Création d’une balise dédiée à un work
       const workElement = document.createElement("div");
       workElement.dataset.id = works[i].id;
       workElement.classList.add("icon-modal");
       workElement.setAttribute("id", `work-project-${works[i].id}`);
+
       // Création de la balise img
       const imageElement = document.createElement("img");
       imageElement.src = icon.imageUrl;
       // Création de l'icône Delete
       const trashElement = document.createElement("button");
-
       trashElement.dataset.id = works[i].id;
       trashElement.classList.add("js-delete-btn");
 
       // fonction callback nécessaire (arrow function)
       trashElement.addEventListener("click", (event) => deleteWork(event, workElement));
-
       trashElement.classList.add("delete-btn");
       trashElement.innerHTML=`<i class="fas fa-trash-alt"></i>`;
 
@@ -176,11 +176,11 @@ function createProject() {
       // Appel de la fonction fetch avec toutes les informations nécessaires
       const response = await fetchPost(userToken, formData);
 
-      // il faut le json pour un fetch et refabriquer l'objet en json et l'utiliser si besoin
+      // il faut le json pour le fetch, pour refabriquer l'objet en json et l'utiliser si besoin
       const parsedResponse = await response.json();
       // console.log(parsedResponse);
 
-      // j'ajoute à partir de ma response l'élément dans ma section icons-gallery content
+      // J'ajoute à partir de ma response l'élément dans ma section icons-gallery content
       addElementOnGallery(parsedResponse);
 
       // Fermeture de la modal et reset
@@ -199,6 +199,16 @@ function createProject() {
   })
 }
 
+function previousStep() {
+  if (document.querySelector(".js-previous-btn")) {
+    const buttonPrevious = document.querySelector(".js-previous-btn");
+    buttonPrevious.addEventListener("click", () => {
+      resetModal();
+      generateIndex();
+    })
+  }
+}
+
 function addProject() {
   if (document.querySelector(".js-add-btn")) {
 
@@ -213,6 +223,7 @@ function addProject() {
       arrow.classList.add("fa-solid");
       arrow.classList.add("fa-arrow-left");
       arrow.classList.add("header-fa");
+      arrow.classList.add("js-previous-btn");
       headerModal.insertAdjacentHTML("afterbegin", arrow.outerHTML);
       headerModal.style.justifyContent = "space-between";
 
@@ -243,6 +254,12 @@ function addProject() {
         </form>
       `;
 
+      // je pourrai mettre des addEventlistener sur tous mes inputs sur le change
+      // quand  on rentre dedans on vérifie la valeur de chacun des input, voir s'ils ont une value
+      // si c'est le cas, on met le bouton en vert
+      // const buttonValidate = document.getElementById("submit-form-new");
+      // buttonValidate.style.backgroundColor = "#1D6154";
+
       categories.forEach(category => {
         const selectValue = document.createElement("option");
         const selectElement = document.getElementById("category");
@@ -252,18 +269,23 @@ function addProject() {
         selectElement.insertAdjacentHTML("beforeend", selectValue.outerHTML);
       });
 
+      previousStep();
+
       setPreviousImage();
 
       buttonAdd.remove();
 
       createProject();
     });
-  }
 
-  if (document.querySelector('.js-close-button')) {
-    closeModal(modal);
+
+    if (document.querySelector('.js-close-button')) {
+      closeModal(modal);
+    }
   }
 }
+
+// js-previous-button rappelle la première page de la modal
 
 ///////////// OPEN AND CLOSE MODAL //////////////
 
@@ -304,3 +326,25 @@ function callModal() {
 }
 
 callModal();
+
+
+
+
+// SUPPORT PRESENTATION
+// RECONTEXTUALISATION
+// 15 MN PRESENTATION (20 MAX)
+// ELEMENTS & DEMO SITE
+// CONNEXION / AJOUT PROJET / DECONNEXION
+// 1. FILTRER GALERIE
+// 2. LOGIN
+// FONCTION AJOUT SUPPR
+// PRESENTATION AXEE SUR LE CODE PLUS QUE SUR LE PROJET PRECEDENT
+// APPEL API COMMENT SONT TRAITES LES DONNNEES
+// USER LOGIN OU NON
+//
+
+
+// PROJET SUIVANT
+// GESTION DE PROJET
+// CREATION DE SUPPORT DE PRES
+// DOCUMENTATION
