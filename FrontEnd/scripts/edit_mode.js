@@ -53,13 +53,13 @@ function generateModal() {
 
 function EditPage() {
   if (window.localStorage.getItem("token")) {
-    console.log("token");
+    // console.log("token");
     bannerEdit();
     editButton();
     removeFilters();
     generateModal();
   } else {
-    console.log("no token");
+    // console.log("no token");
   }
 }
 

@@ -95,7 +95,7 @@ function setPreviousImage() {
     const [files] = inputPhoto.files;
 
     const divBeforePreview = document.getElementById("before-preview");
-    const buttonValidate = document.getElementById("submit-form-new");
+    // const buttonValidate = document.getElementById("submit-form-new");
 
     if (files) {
       // Création de preview image
@@ -104,7 +104,7 @@ function setPreviousImage() {
 
       divBeforePreview.style.display = "none";
       inputContentImage.insertAdjacentHTML("afterbegin", previewImage.outerHTML);
-      buttonValidate.style.backgroundColor = "#1D6154";
+      // buttonValidate.style.backgroundColor = "#1D6154";
     }
   }
 }
@@ -209,6 +209,38 @@ function previousStep() {
   }
 }
 
+function validateButtonGreen() {
+  const inputImage = document.getElementById("photo");
+  const inputTitle = document.getElementById("title");
+  const inputCategory = document.getElementById("category");
+
+  const arrayCondition = [];
+
+  inputImage.addEventListener("change", () => {
+    if (inputImage.value != "") {
+      arrayCondition.push(true);
+    }
+  })
+  inputTitle.addEventListener("change", () => {
+    if (inputTitle.value != "") {
+      arrayCondition.push(true);
+    }
+  })
+  inputCategory.addEventListener("change", () => {
+    if (inputCategory.value != "") {
+      arrayCondition.push(true);
+      if (arrayCondition.length === 3) {
+        const arrayWithoutDuplicate = [...new Set(arrayCondition) ];
+        if ((arrayWithoutDuplicate.length === 1 ) && arrayWithoutDuplicate.includes(true)) {
+          const buttonValidate = document.getElementById("submit-form-new");
+          buttonValidate.style.backgroundColor = "#1D6154";
+        }
+      }
+    }
+  })
+
+}
+
 function addProject() {
   if (document.querySelector(".js-add-btn")) {
 
@@ -274,6 +306,8 @@ function addProject() {
       setPreviousImage();
 
       buttonAdd.remove();
+
+      validateButtonGreen();
 
       createProject();
     });
