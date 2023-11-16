@@ -286,12 +286,6 @@ function addProject() {
         </form>
       `;
 
-      // je pourrai mettre des addEventlistener sur tous mes inputs sur le change
-      // quand  on rentre dedans on vérifie la valeur de chacun des input, voir s'ils ont une value
-      // si c'est le cas, on met le bouton en vert
-      // const buttonValidate = document.getElementById("submit-form-new");
-      // buttonValidate.style.backgroundColor = "#1D6154";
-
       categories.forEach(category => {
         const selectValue = document.createElement("option");
         const selectElement = document.getElementById("category");
@@ -302,13 +296,9 @@ function addProject() {
       });
 
       previousStep();
-
       setPreviousImage();
-
       buttonAdd.remove();
-
       validateButtonGreen();
-
       createProject();
     });
 
@@ -318,8 +308,6 @@ function addProject() {
     }
   }
 }
-
-// js-previous-button rappelle la première page de la modal
 
 ///////////// OPEN AND CLOSE MODAL //////////////
 
@@ -360,25 +348,3 @@ function callModal() {
 }
 
 callModal();
-
-
-
-
-// SUPPORT PRESENTATION
-// RECONTEXTUALISATION
-// 15 MN PRESENTATION (20 MAX)
-// ELEMENTS & DEMO SITE
-// CONNEXION / AJOUT PROJET / DECONNEXION
-// 1. FILTRER GALERIE
-// 2. LOGIN
-// FONCTION AJOUT SUPPR
-// PRESENTATION AXEE SUR LE CODE PLUS QUE SUR LE PROJET PRECEDENT
-// APPEL API COMMENT SONT TRAITES LES DONNNEES
-// USER LOGIN OU NON
-//
-
-
-// PROJET SUIVANT
-// GESTION DE PROJET
-// CREATION DE SUPPORT DE PRES
-// DOCUMENTATION
