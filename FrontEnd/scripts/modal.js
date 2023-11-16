@@ -43,7 +43,6 @@ async function generateIndex() {
 /////////// DELETE ////////////////
 
 async function fetchDelete(userToken, workId) {
-  // passer le bearer
   return await fetch(`http://localhost:5678/api/works/${workId}`, {
     method: 'DELETE',
     headers: {
@@ -59,7 +58,6 @@ function removeElementFromGallery(workId) {
 }
 
 async function deleteWork(event, workElement) {
-  // console.log(workElement);
   try {
     const workId = workElement.dataset.id;
     const work = document.getElementById(`work-project-${workId}`);
@@ -95,7 +93,6 @@ function setPreviousImage() {
     const [files] = inputPhoto.files;
 
     const divBeforePreview = document.getElementById("before-preview");
-    // const buttonValidate = document.getElementById("submit-form-new");
 
     if (files) {
       // Création de preview image
@@ -104,7 +101,6 @@ function setPreviousImage() {
 
       divBeforePreview.style.display = "none";
       inputContentImage.insertAdjacentHTML("afterbegin", previewImage.outerHTML);
-      // buttonValidate.style.backgroundColor = "#1D6154";
     }
   }
 }
@@ -171,7 +167,6 @@ function createProject() {
       const userToken = window.localStorage.getItem("token").replace(/['"]+/g, '');
 
       const formData = new FormData(newForm);
-      // console.log(formData);
 
       // Appel de la fonction fetch avec toutes les informations nécessaires
       const response = await fetchPost(userToken, formData);
