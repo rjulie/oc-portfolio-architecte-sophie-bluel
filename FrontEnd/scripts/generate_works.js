@@ -64,8 +64,6 @@ function generateFilters(filters) {
 }
 generateFilters(filtersWithoutDuplicate);
 
-// Bouton Filtrer pour chaque categorie
-
 function filterByCategory() {
 
   if (document.querySelectorAll(".filter")) {
