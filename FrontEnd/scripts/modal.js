@@ -214,26 +214,32 @@ function validateButtonGreen() {
   inputImage.addEventListener("change", () => {
     if (inputImage.value != "") {
       arrayCondition.push(true);
+      checkCondtionArray(arrayCondition);
     }
   })
   inputTitle.addEventListener("change", () => {
     if (inputTitle.value != "") {
       arrayCondition.push(true);
+      checkCondtionArray(arrayCondition);
     }
   })
   inputCategory.addEventListener("change", () => {
     if (inputCategory.value != "") {
       arrayCondition.push(true);
-      if (arrayCondition.length === 3) {
-        const arrayWithoutDuplicate = [...new Set(arrayCondition) ];
-        if ((arrayWithoutDuplicate.length === 1 ) && arrayWithoutDuplicate.includes(true)) {
-          const buttonValidate = document.getElementById("submit-form-new");
-          buttonValidate.style.backgroundColor = "#1D6154";
-        }
-      }
+      checkCondtionArray(arrayCondition);
     }
   })
 
+}
+
+function checkCondtionArray(arrayCondition) {
+  if (arrayCondition.length === 3) {
+    const arrayWithoutDuplicate = [...new Set(arrayCondition) ];
+    if ((arrayWithoutDuplicate.length === 1 ) && arrayWithoutDuplicate.includes(true)) {
+      const buttonValidate = document.getElementById("submit-form-new");
+      buttonValidate.style.backgroundColor = "#1D6154";
+    }
+  }
 }
 
 function addProject() {
