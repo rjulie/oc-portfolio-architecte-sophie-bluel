@@ -77,11 +77,11 @@ function filterByCategory() {
         });
       } else {
         buttonCategory.addEventListener("click", function () {
-          const FilteredWorks = works.filter(function (work) {
+          const filteredWorks = works.filter(function (work) {
             return work.category.name === buttonCategory.innerText;
           });
           document.querySelector(".gallery").innerHTML = "";
-          generateWorksWithTemplateLiterals(FilteredWorks);
+          generateWorksWithTemplateLiterals(filteredWorks);
         });
       };
     });
